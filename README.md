@@ -85,17 +85,24 @@ GCP_BUCKET<br>
 5. 点击 "Run workflow"
 6. 选择存储服务类型
 7. 输入要备份的 Docker 镜像列表（每行一个），例如：
-nginx:latest
-mysql:8.0
-redis:7.2
-8. 点击 "Run workflow" 开始备份过程
+   ```
+   nginx:latest
+   mysql:8.0
+   redis:7.2
+   ```
+
 
 ## 📁 备份结构
 
 备份文件按以下结构存储：
-docker_images/
-└── 镜像名称_标签_时间戳.tar
 
+## 📁 备份结构
+
+备份文件按以下结构存储：
+
+docker_images/
+
+└── 镜像名称_标签_时间戳.tar
 
 ## 🔍 使用示例
 
