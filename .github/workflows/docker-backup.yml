@@ -1,0 +1,60 @@
+# .github/workflows/docker-backup.yml
+name: Docker Image Backup
+
+on:
+  # 只使用手动触发
+  workflow_dispatch:
+    inputs:
+      images:
+        description: '要备份的镜像列表 (每行一个镜像，格式: name:tag)'
+        required: true
+        type: string
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Setup ossutil
+      run: |
+        wget http://gosspublic.alicdn.com/ossutil/1.7.7/ossutil64
+        chmod 755 ossutil64
+        ./ossutil64 config -e ${{ secrets.OSS_ENDPOINT }} -i ${{ secrets.ALIYUN_ACCESS_KEY }} -k ${{ secrets.ALIYUN_SECRET_KEY }}
+
+    - name: Process Docker Images
+      run: |
+        # 创建临时目录
+        TEMP_DIR="/tmp/docker_backup"
+        mkdir -p $TEMP_DIR
+        
+        # 将输入的镜像列表转换为数组
+        echo "${{ github.event.inputs.images }}" | while read IMAGE; do
+          # 跳过空行
+          [ -z "$IMAGE" ] && continue
+          
+          echo "Processing image: $IMAGE"
+          
+          # 拉取镜像
+          docker pull $IMAGE
+          
+          # 生成安全的文件名
+          SAFE_NAME=$(echo $IMAGE | tr ':/' '_')
+          TAR_FILE="$TEMP_DIR/${SAFE_NAME}_$(date +%Y%m%d_%H%M%S).tar"
+          
+          # 保存镜像
+          docker save $IMAGE -o $TAR_FILE
+          
+          # 上传到OSS
+          ./ossutil64 cp $TAR_FILE oss://${{ secrets.OSS_BUCKET }}/docker_images/
+          
+          # 清理临时文件
+          rm $TAR_FILE
+          
+          echo "Completed backup for: $IMAGE"
+        done
+
+    - name: Cleanup
+      if: always()
+      run: |
+        rm -rf /tmp/docker_backup
+        docker system prune -f
