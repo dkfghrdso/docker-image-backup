@@ -96,10 +96,6 @@ GCP_BUCKET<br>
 
 备份文件按以下结构存储：
 
-## 📁 备份结构
-
-备份文件按以下结构存储：
-
 docker_images/
 
 └── 镜像名称_标签_时间戳.tar
@@ -131,9 +127,7 @@ nginx:1.24
 
 欢迎提交 Pull Request 来改进这个项目！
 
-## 📄 许可证
 
-本项目采用 MIT 许可证 - 详见 [LICENSE](LICENSE) 文件
 
 ## 🙏 致谢
 
