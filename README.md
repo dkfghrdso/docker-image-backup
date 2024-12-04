@@ -106,10 +106,12 @@ docker_images/
 
 1. 配置阿里云 OSS 密钥
 2. 运行工作流并输入以下镜像列表：
-debian:latest
-ubuntu:22.04
-python:3.9-slim
-nginx:1.24
+debian:latest<br>
+ubuntu:22.04<br>
+python:3.9-slim<br>
+nginx:1.24<br>
+
+
 3. 工作流将：
    - 拉取每个镜像
    - 将其保存为 tar 文件
